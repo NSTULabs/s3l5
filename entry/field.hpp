@@ -17,8 +17,16 @@ public:
         grid.resize(rows, vector<Cell>(cols));
     }
 
+    // Open cell by click
     void openCell(int row, int col) {
-        if (row < 0 || row >= rows || col < 0 || col >= cols || grid[row][col].getType() != Closed) {
+        if (row < 0 || row >= rows || col < 0 || col >= cols) {
+            return;
+        }
+        if (grid[row][col].getType() == Opened) {
+            openCellsAround(row, col);
+            return;
+        }
+        if (grid[row][col].getType() == Flagged) {
             return;
         }
         if (grid[row][col].isHasMine()) {
@@ -28,6 +36,22 @@ public:
         }
 
         openNeighborCells(row, col);
+    }
+
+    // Open cells if click on opened cell
+    void openCellsAround(int row, int col) {
+        for (int dr = -1; dr <= 1; dr++) {
+            for (int dc = -1; dc <= 1; dc++) {
+                int y = row + dr;
+                int x = col + dc;
+                if (!(dr == 0 && dc == 0) && grid[y][x].getType() == Closed) {
+                    grid[y][x].open();
+                    if (grid[y][x].isHasMine()) {
+                        mineIsOpen = true;
+                    }
+                }
+            }
+        }
     }
 
     void openNeighborCells(int row, int col) {
@@ -42,9 +66,9 @@ public:
             return;
         }
 
-        for (int dr = -1; dr <= 1; ++dr) {
-            for (int dc = -1; dc <= 1; ++dc) {
-                if (dr != 0 || dc != 0) {
+        for (int dr = -1; dr <= 1; dr++) {
+            for (int dc = -1; dc <= 1; dc++) {
+                if (!(dr == 0 && dc == 0)) {
                     openNeighborCells(row + dr, col + dc);
                 }
             }
