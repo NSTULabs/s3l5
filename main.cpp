@@ -5,7 +5,7 @@
 #include "entry/field.hpp"
 #include "entry/textures.hpp"
 #include "entry/game.hpp"
-#include "entry/window.hpp"
+#include "entry/sfml_window.hpp"
 
 
 int main() {
@@ -16,7 +16,7 @@ int main() {
     Textures textures;
     Game game(rows, cols, mines);
 
-    Window window(game, textures);
+    SFMLWindow window(game, textures);
     window.start();
 
     return 0;

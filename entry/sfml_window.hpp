@@ -5,18 +5,19 @@
 
 #include "textures.hpp"
 #include "game.hpp"
+#include "visualizer.hpp"
 
 using namespace std;
 
 const int CELL_SIZE = 32;
 
-class Window {
+class SFMLWindow : public Visualizer {
 public:
-    Window(const Game& game, const Textures& textures) : window(
+    SFMLWindow(Game& game, Textures& textures) : Visualizer(game), window(
             sf::VideoMode(game.field.getRows() * CELL_SIZE, game.field.getCols() * CELL_SIZE), 
             "Minesweeper",
             sf::Style::Titlebar | sf::Style::Close
-        ), game(game), textures(textures) {
+        ), textures(textures) {
         window.setFramerateLimit(60);
     }
 
@@ -89,7 +90,6 @@ public:
 private:
     sf::RenderWindow window;
     Textures textures;
-    Game game;
 };
 
 #endif
