@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const int CELL_SIZE = 16;
+const int CELL_SIZE = 32;
 
 class Window {
 public:
@@ -66,6 +66,9 @@ public:
                     } else if (grid[row][col].getType() == Flagged) {
                         sprite.setTexture(textures.flag);
                     }
+
+                    float scale = static_cast<float>(CELL_SIZE) / 16.0f; 
+                    sprite.setScale(scale, scale);
 
                     sprite.setPosition(col * CELL_SIZE, row * CELL_SIZE);
                     window.draw(sprite);

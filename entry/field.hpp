@@ -14,13 +14,15 @@ class Field {
 public:
     Field(int rows, int cols, int mines)
         : rows(rows), cols(cols), mines(mines) {
-        grid.resize(rows, std::vector<Cell>(cols));
+        grid.resize(rows, vector<Cell>(cols));
     }
 
     void openCell(int row, int col) {
-        if (row < 0 || row >= rows || col < 0 || col >= cols || grid[row][col].getType() != Closed)
+        if (row < 0 || row >= rows || col < 0 || col >= cols || grid[row][col].getType() != Closed) {
             return;
+        }
         if (grid[row][col].isHasMine()) {
+            grid[row][col].open();
             mineIsOpen = true;
             return;
         }
@@ -29,24 +31,20 @@ public:
     }
 
     void openNeighborCells(int row, int col) {
-        // Проверяем границы и тип клетки
         if (row < 0 || row >= rows || col < 0 || col >= cols || grid[row][col].getType() != Closed) {
             return;
         }
 
-        // Открываем текущую клетку
-        grid[row][col].setType(Opened);
+        grid[row][col].open();
         cellsOpen++;
 
-        // Если в клетке есть мины вокруг, прекращаем дальнейшее открытие
         if (grid[row][col].getAdjacentMines() > 0) {
             return;
         }
 
-        // Рекурсивно открываем соседние клетки
         for (int dr = -1; dr <= 1; ++dr) {
             for (int dc = -1; dc <= 1; ++dc) {
-                if (dr != 0 || dc != 0) { // Исключаем текущую клетку
+                if (dr != 0 || dc != 0) {
                     openNeighborCells(row + dr, col + dc);
                 }
             }
@@ -56,10 +54,6 @@ public:
 
     void toggleFlag(int row, int col) {
         grid[row][col].toggleFlag();
-    }
-
-    const vector<vector<Cell>>& getGrid() const {
-        return grid;
     }
 
     void placeMines(int firstRow, int firstCol) {
@@ -92,6 +86,10 @@ public:
                 grid[row][col].setAdjacentMines(mineCount);
             }
         }
+    }
+
+    const vector<vector<Cell>>& getGrid() const {
+        return grid;
     }
 
     int getCellsOpen() const { return cellsOpen; }
