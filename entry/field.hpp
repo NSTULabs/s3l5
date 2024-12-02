@@ -38,6 +38,37 @@ public:
         openNeighborCells(row, col);
     }
 
+    void placeMines(int firstRow, int firstCol) {
+        for (int i = 0; i < mines; ++i) {
+            int row, col;
+            do {
+                row = rand() % rows;
+                col = rand() % cols;
+            } while (grid[row][col].isHasMine() || (row + 1 >= firstRow && row - 1 <= firstRow && col + 1 >= firstCol && col - 1 <= firstCol));
+            grid[row][col] = new Cell(true);
+        }
+        calculateAdjacency();
+    }
+
+    vector<vector<Cell>>& getGrid() {
+        return grid;
+    }
+
+    int getCellsOpen() const { return cellsOpen; }
+
+    bool getMineIsOpen() const { return mineIsOpen; }
+
+    int getRows() const { return rows; }
+
+    int getCols() const { return cols; }
+
+    int getMines() const { return mines; }
+private:
+    int rows, cols, mines;
+    int cellsOpen = 0;
+    bool mineIsOpen = false;
+    vector<vector<Cell>> grid;
+
     // Open cells if click on opened cell
     void openCellsAround(int row, int col) {
         for (int dr = -1; dr <= 1; dr++) {
@@ -54,6 +85,7 @@ public:
         }
     }
 
+    // Open neighbor cells if cell don't have mines around
     void openNeighborCells(int row, int col) {
         if (row < 0 || row >= rows || col < 0 || col >= cols || grid[row][col].getType() != Closed) {
             return;
@@ -73,23 +105,6 @@ public:
                 }
             }
         }
-    }
-        
-
-    void toggleFlag(int row, int col) {
-        grid[row][col].toggleFlag();
-    }
-
-    void placeMines(int firstRow, int firstCol) {
-        for (int i = 0; i < mines; ++i) {
-            int row, col;
-            do {
-                row = rand() % rows;
-                col = rand() % cols;
-            } while (grid[row][col].isHasMine() || (row + 1 >= firstRow && row - 1 <= firstRow && col + 1 >= firstCol && col - 1 <= firstCol));
-            grid[row][col] = new Cell(true);
-        }
-        calculateAdjacency();
     }
 
     void calculateAdjacency() {
@@ -111,25 +126,6 @@ public:
             }
         }
     }
-
-    const vector<vector<Cell>>& getGrid() const {
-        return grid;
-    }
-
-    int getCellsOpen() const { return cellsOpen; }
-
-    bool getMineIsOpen() const { return mineIsOpen; }
-
-    int getRows() const { return rows; }
-
-    int getCols() const { return cols; }
-
-    int getMines() const { return mines; }
-private:
-    int rows, cols, mines;
-    int cellsOpen = 0;
-    bool mineIsOpen = false;
-    vector<vector<Cell>> grid;
 };
 
 #endif

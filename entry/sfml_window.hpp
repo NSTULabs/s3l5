@@ -41,7 +41,7 @@ public:
                         }
                         game.field.openCell(row, col);
                     } else if (event.mouseButton.button == sf::Mouse::Right) {
-                        game.field.toggleFlag(row, col);
+                        game.field.getGrid()[row][col].toggleFlag();
                     }
                 }
             }
