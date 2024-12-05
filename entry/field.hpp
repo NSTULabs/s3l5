@@ -50,6 +50,16 @@ public:
         calculateAdjacency();
     }
 
+    void openMines() {
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (grid[row][col].isHasMine()) {
+                    grid[row][col].open();
+                }
+            }
+        }
+    }
+
     vector<vector<Cell>>& getGrid() {
         return grid;
     }
@@ -75,10 +85,12 @@ private:
             for (int dc = -1; dc <= 1; dc++) {
                 int y = row + dr;
                 int x = col + dc;
-                if (!(dr == 0 && dc == 0) && grid[y][x].getType() == Closed) {
+                if (!(dr == 0 && dc == 0) && x >= 0 && y >= 0 && x < cols && y < rows && grid[y][x].getType() == Closed) {
                     grid[y][x].open();
                     if (grid[y][x].isHasMine()) {
                         mineIsOpen = true;
+                    } else {
+                        cellsOpen++;
                     }
                 }
             }

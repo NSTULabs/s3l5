@@ -2,6 +2,8 @@
 #define WINDOW_HPP
 
 #include <SFML/Graphics.hpp>
+#include <thread>
+#include <chrono>
 
 #include "textures.hpp"
 #include "game.hpp"
@@ -22,7 +24,8 @@ public:
     }
 
     void start() {
-        bool isFirstClick = false;
+        bool isNotFirstClick = false;
+        bool isFinished = false;
         while (window.isOpen()) {
             sf::Event event;
             while (window.pollEvent(event)) {
@@ -35,9 +38,9 @@ public:
                     int row = event.mouseButton.y / CELL_SIZE;
 
                     if (event.mouseButton.button == sf::Mouse::Left) {
-                        if (!isFirstClick) {
+                        if (!isNotFirstClick) {
                             game.field.placeMines(row, col);
-                            isFirstClick = true;
+                            isNotFirstClick = true;
                         }
                         game.field.openCell(row, col);
                     } else if (event.mouseButton.button == sf::Mouse::Right) {
@@ -78,11 +81,19 @@ public:
 
             window.display();
 
-            if (game.getStatus() == GameStatus::Win) {
-                cout << "You win" << endl;
-                break;
-            } else if (game.getStatus() == GameStatus::Lose) {
-                cout << "You lose" << endl;
+            if (!isFinished) {
+                if (game.getStatus() == GameStatus::Win) {
+                    isFinished = true;
+                    cout << "You win" << endl;
+                    continue;
+                } else if (game.getStatus() == GameStatus::Lose) {
+                    isFinished = true;
+                    cout << "You lose" << endl;
+                    game.field.openMines();
+                    continue;
+                }
+            } else {
+                this_thread::sleep_for(chrono::seconds(2));
                 break;
             }
         }
